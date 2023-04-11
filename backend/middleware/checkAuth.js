@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import Veterinario from "../Models/Veterinario.js";
+import Veterinario from "../models/Veterinario.js";
 
 //Este middleware es para verificar y restringir acceso las rutas a usuarios autorizados
 const checkAuth = async (req, res, next) => { 

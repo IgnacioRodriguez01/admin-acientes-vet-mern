@@ -2,7 +2,7 @@ import emailPassword from "../helpers/emailPassword.js";
 import emailRegistro from "../helpers/emailRegistro.js";
 import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
-import Veterinario from "../Models/Veterinario.js";
+import Veterinario from "../models/Veterinario.js";
 
 const registrar = async (req, res, next) => {
     try {
