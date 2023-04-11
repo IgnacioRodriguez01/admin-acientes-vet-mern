@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthProvider.jsx";
 
-import AuthLayout from "./layout/authLayout.jsx";
+import AuthLayout from "./layout/AuthLayout.jsx";
 import RutaProtegida from "./layout/RutaProtegida.jsx";
 
 import Registrar from "./paginas/Registrar.jsx";

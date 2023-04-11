@@ -2,7 +2,7 @@
 import { Link, useParams } from "react-router-dom";
 import clienteAxios from "../config/axios.jsx";
 
-import { Alerta } from "../components/alerta.jsx";
+import { Alerta } from "../components/Alerta.jsx";
 
 const PasswordReset = () => {
     const [alerta, setAlerta] = useState({});

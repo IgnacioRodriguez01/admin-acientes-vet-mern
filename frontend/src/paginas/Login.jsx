@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth.jsx";
 import clienteAxios from "../config/axios.jsx";
 
-import { Alerta } from "../components/alerta.jsx";
+import { Alerta } from "../components/Alerta.jsx";
 
 const Login = () => {
 
