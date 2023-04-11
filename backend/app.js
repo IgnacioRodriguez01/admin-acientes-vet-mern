@@ -23,7 +23,7 @@ var debug = debug$0('backend:server');
 conectarDB();
 
 const allowedDomains = [process.env.FRONTEND_URL];
-const corsOptions = {
+/* const corsOptions = {
     origin: function(origin, callback) {
         if(allowedDomains.indexOf(origin) !== -1) {
             callback(null, true);
@@ -31,7 +31,8 @@ const corsOptions = {
             callback(new Error('No permitido por CORS'));
         }
     }
-}
+} */
+const corsOptions = { origin: '*' }
 
 app.use(cors(corsOptions));
 
