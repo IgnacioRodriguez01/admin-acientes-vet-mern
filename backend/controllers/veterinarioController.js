@@ -67,8 +67,12 @@ const autenticar = async (req, res, next) => {
     //Autenticar usuario. Aca se hace con methods del schema, o directamente con una funcion aca. 
     //Ver que es más seguro, dependiendo qué se envía y por donde.?
     if(await usuario.comprobarPassword(password)) {
-        const token = generarJWT(usuario.id);
-        res.json( {token: token} );
+       res.json({
+        _id: usuario._id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        token:  generarJWT(usuario.id),
+       });
     } else {
         const error = new Error('Contraseña incorrecta');
         return res.status(401).json({ msg: error.message });

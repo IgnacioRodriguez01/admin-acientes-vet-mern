@@ -28,6 +28,7 @@ const Login = () => {
         try {
             const {data} = await clienteAxios.post('/veterinarios/login', {email, password});
             //guardar token para ser traido por el context
+            setAuth(data);
             localStorage.setItem('apv_session', data.token)
             
             setAlerta({msg:'Ingresando...'})
