@@ -14,7 +14,8 @@ const agregarPaciente = async (req, res, next) => {
     
     try {    
         const pacienteRes = await paciente.save(); //Guardar en el modelo        
-        res.json({pacienteRes});
+        console.log(pacienteRes)
+        res.json(pacienteRes);
     } catch (error) {
         console.error(error);
     }

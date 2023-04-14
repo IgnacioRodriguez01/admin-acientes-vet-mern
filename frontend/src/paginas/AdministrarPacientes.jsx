@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Formulario from "../components/Formulario.jsx";
 import ListadoPacientes from "../components/ListadoPacientes.jsx";
+import usePacientes from "../hooks/usePacientes.jsx";
 
 const AdministrarPacientes = () => {
     const [mostrarForm, setMostrarForm] = useState(false);
+    const {pacientes} = usePacientes();
 
     return (
         <div className="flex flex-col md:flex-row">

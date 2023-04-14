@@ -1,13 +1,17 @@
 import { useState } from "react";
+import usePacientes from "../hooks/usePacientes.jsx";
 
 import { Alerta } from "./Alerta.jsx";
 
 const Formulario = () => {
+    const { pacientes, guardarPaciente } = usePacientes();
+
     const [nombre, setNombre] = useState('');
     const [propietario, setPropietario] = useState('');
     const [email, setEmail] = useState('');
     const [fecha, setFecha] = useState('');
     const [sintomas, setSintomas] = useState('');
+    
     const [alerta, setAlerta] = useState({});
 
     const handleSubmit = e => {
@@ -17,11 +21,15 @@ const Formulario = () => {
             setAlerta({ msg: "Todos los campos son obligatorios.", error: true });
             return;
         }
+        setAlerta({});
+
+        guardarPaciente({nombre, propietario, email, fecha, sintomas})
     }
 
     return (
         <>
-            <p className="text-lg text-center mb-10">
+            <h2 className="font-black text-3xl text-center">Administrador de Pacientes</h2>
+            <p className="text-xl text-center mt-5 mb-10">
                 Añade tu pacientes y
                 <span className="text-indigo-600 font-bold">
                     {" "}
