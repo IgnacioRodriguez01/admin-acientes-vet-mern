@@ -1,5 +1,9 @@
+import usePacientes from "../hooks/usePacientes.jsx";
+
 const Paciente = ({ paciente }) => {
     const { _id, nombre, propietario, email, sintomas, fecha_alta } = paciente;
+
+    const { setPacienteEdit } = usePacientes();
 
     const fechaFormat = (fecha) => {
         const nuevaFecha = new Date(fecha);
@@ -50,12 +54,14 @@ const Paciente = ({ paciente }) => {
                 <button
                     type="button"
                     className="py-2 px-10 bg-indigo-600 hover:bg-indigo-600 text-white font-bold uppercase rounded-lg"
+                    onClick={() => setPacienteEdit(paciente)}
                 >
                     Editar
                 </button>
                 <button
                     type="button"
                     className="py-2 px-10 bg-red-600 hover:bg-red-600 text-white font-bold uppercase rounded-lg"
+                    onClick={() => console.log('hola')}
                 >
                     Eliminar
                 </button>

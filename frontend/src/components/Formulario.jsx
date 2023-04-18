@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import usePacientes from "../hooks/usePacientes.jsx";
 
 import { Alerta } from "./Alerta.jsx";
 
 const Formulario = () => {
-    const { pacientes, guardarPaciente } = usePacientes();
+    const { pacientes, guardarPaciente, pacienteEdit, editarPaciente } = usePacientes();
 
     const [nombre, setNombre] = useState('');
     const [propietario, setPropietario] = useState('');
@@ -13,6 +13,22 @@ const Formulario = () => {
     const [sintomas, setSintomas] = useState('');
     
     const [alerta, setAlerta] = useState({});
+
+    useEffect(() => {
+        if(pacienteEdit._id) {
+            setNombre(pacienteEdit.nombre);
+            setPropietario(pacienteEdit.propietario);
+            setEmail(pacienteEdit.email);
+            setFecha(pacienteEdit.fecha_alta);
+            setSintomas(pacienteEdit.sintomas);
+        } else {
+            setNombre('');
+            setPropietario('');
+            setEmail('');
+            setFecha('');
+            setSintomas('');
+        }
+    }, [pacienteEdit])
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -23,7 +39,13 @@ const Formulario = () => {
         }
         setAlerta({});
 
-        guardarPaciente({nombre, propietario, email, fecha, sintomas})
+        if(pacienteEdit._id) {
+            const paciente = {_id: pacienteEdit._id, nombre, propietario, email, fecha_alta: fecha, sintomas};
+            editarPaciente(paciente);
+            return;
+        }
+
+        guardarPaciente({nombre, propietario, email, fecha, sintomas});
     }
 
     return (
@@ -121,7 +143,7 @@ const Formulario = () => {
 
                 <input
                     type="submit"
-                    value="Agregar Paciente"
+                    value={pacienteEdit._id ? "Editar Paciente" : "Agregar Paciente"}
                     className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
                     onClick={e => handleSubmit(e)}
                 />
