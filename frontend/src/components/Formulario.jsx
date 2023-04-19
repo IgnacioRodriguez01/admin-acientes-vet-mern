@@ -14,12 +14,19 @@ const Formulario = () => {
     
     const [alerta, setAlerta] = useState({});
 
+    const fechaFormatInput = (fecha) => {
+        const nuevaFecha = new Date(fecha);
+        nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
+        const padNum = (num) => String(num).padStart(2, '0')
+        return `${padNum(nuevaFecha.getFullYear())}-${padNum(nuevaFecha.getMonth()+1)}-${padNum(nuevaFecha.getDate())}`;
+    };
+
     useEffect(() => {
-        if(pacienteEdit._id) {
+        if(pacienteEdit?._id) {
             setNombre(pacienteEdit.nombre);
             setPropietario(pacienteEdit.propietario);
             setEmail(pacienteEdit.email);
-            setFecha(pacienteEdit.fecha_alta);
+            setFecha(fechaFormatInput(pacienteEdit.fecha_alta));
             setSintomas(pacienteEdit.sintomas);
         } else {
             setNombre('');
@@ -39,13 +46,15 @@ const Formulario = () => {
         }
         setAlerta({});
 
-        if(pacienteEdit._id) {
+        if(pacienteEdit?._id) {
             const paciente = {_id: pacienteEdit._id, nombre, propietario, email, fecha_alta: fecha, sintomas};
             editarPaciente(paciente);
+            setAlerta({ msg: "Editado correctamente.", error: false });
             return;
         }
 
         guardarPaciente({nombre, propietario, email, fecha, sintomas});
+        setAlerta({ msg: "Guardado correctamente.", error: false });
     }
 
     return (
@@ -143,7 +152,7 @@ const Formulario = () => {
 
                 <input
                     type="submit"
-                    value={pacienteEdit._id ? "Editar Paciente" : "Agregar Paciente"}
+                    value={pacienteEdit?._id ? "Guardar Cambios" : "Agregar Paciente"}
                     className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
                     onClick={e => handleSubmit(e)}
                 />
