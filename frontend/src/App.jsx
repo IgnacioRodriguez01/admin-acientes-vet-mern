@@ -12,6 +12,8 @@ import Login from "./paginas/Login.jsx";
 import PasswordReset from "./paginas/PasswordReset.jsx";
 import PasswordNew from "./paginas/PasswordNew.jsx";
 import AdministrarPacientes from "./paginas/AdministrarPacientes.jsx";
+import CambiarPassword from "./paginas/CambiarPassword.jsx";
+import EditarPerfil from "./paginas/EditarPerfil.jsx";
 
 function App() {
 
@@ -29,6 +31,8 @@ function App() {
 
                     <Route path="/admin" element={<RutaProtegida />}>
                         <Route index element={<AdministrarPacientes />}></Route>
+                        <Route path="perfil" element={<EditarPerfil />}></Route>
+                        <Route path="cambiar-password" element={<CambiarPassword />}></Route>
                     </Route>
                 </Routes>
             </PacientesProvider>

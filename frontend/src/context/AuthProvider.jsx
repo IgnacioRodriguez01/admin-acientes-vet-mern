@@ -14,10 +14,8 @@ const AuthProvider = ({ children }) => {
         
         if(!token){
             setCargando(false);
-            console.log("auth false");
             return;
         }
-        console.log("auth true");
 
         try {
             const config  ={
@@ -41,13 +39,37 @@ const AuthProvider = ({ children }) => {
         setAuth({})
     }
 
+    const actualizarPerfil = async datos => {
+        const token = localStorage.getItem('apv_session')
+        
+        if(!token){
+            return;
+        }
+        
+        try {
+            const config  ={
+                headers: {
+                    'Content-Type':'application/json',
+                    Authorization:`Bearer ${token}`
+                }
+            }
+            const {data} = await clienteAxios.get('/veterinarios/perfil', config);
+            setAuth(data.perfil);
+            setCargando(false);
+        } catch (error) {
+            console.log(error.response.data.msg);
+        }
+        console.log(datos);
+    }
+
     return (
         <AuthContext.Provider
             value={{
                 auth,
                 setAuth,
                 cargando,
-                cerrarSesion
+                cerrarSesion,
+                actualizarPerfil
             }}
         >
             {children}
