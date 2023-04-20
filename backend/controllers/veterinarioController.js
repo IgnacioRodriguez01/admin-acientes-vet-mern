@@ -27,6 +27,7 @@ const registrar = async (req, res, next) => {
         console.error(error);
     }
 };
+
 const confirmar = async (req, res, next) => {
     const {token} = req.params;
     const usuarioConfirmar = await Veterinario.findOne({token});
@@ -143,6 +144,42 @@ const perfil = (req, res, next) => {
     res.json({ perfil: veterinario });
 };
 
+const editarPerfil = async (req, res, next) => {
+    const veterinario = req.veterinario;
+
+    try {
+        const usuario = await Veterinario.findOne(veterinario._id);
+
+        for (const key of Object.keys(req.body)) {
+            if(['_id','password','token','confirmado'].includes(key)) continue;
+            
+            if (key === 'email' && usuario[key] !== req.body[key]) {
+                usuario.confirmado = false;
+                usuario.token = generarId()
+            }
+            if (key in usuario) {
+                if(req.body[key] === '') {
+                    usuario[key] = null;
+                    continue;
+                }
+                usuario[key] = String(req.body[key])
+            }
+        }
+
+        await usuario.save();
+        if(!usuario.confirmado) {
+            //Enviar email
+            emailRegistro({email:usuario.email, nombre:usuario.nombre, token:usuario.token});
+            res.json({ msg:'Perfil editado correctamente. Email con instrucciones enviado.' });
+            return;
+        }
+        
+        res.json({ msg: 'Perfil editado correctamente.' });
+    } catch (error) {
+        return res.status(404).json({ msg: error.message });
+    }
+};
+
 export {
     registrar,
     confirmar,
@@ -150,5 +187,6 @@ export {
     resetearPassword, 
     tokenPassword, 
     nuevoPassword,
-    perfil
+    perfil,
+    editarPerfil
 };

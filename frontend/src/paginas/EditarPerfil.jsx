@@ -11,13 +11,12 @@ const EditarPerfil = () => {
 
     useEffect(() => {
         setPerfil(auth);
-
     }, [auth]);
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault();
 
-        const {nombre, email} = perfil
+        const {nombre, web, telefono, email} = perfil
 
         if(!nombre && !email){
             setAlerta({ msg: "El nombre y el mail son obligatorios.", error: true });
@@ -32,8 +31,8 @@ const EditarPerfil = () => {
             return;
         }
 
-        actualizarPerfil(perfil);
-        setAlerta({ msg: "Ok", error: false });
+        const msg = await actualizarPerfil(perfil);
+        setAlerta({ msg, error: false });
     }
 
     return (
@@ -95,7 +94,7 @@ const EditarPerfil = () => {
                                 Email
                             </label>
                             <input
-                                type="text"
+                                type="email"
                                 name="email"
                                 className="border bg-gray-50 w-full p-2 mt-5 rounded-lg"
                                 value={perfil.email || ''}

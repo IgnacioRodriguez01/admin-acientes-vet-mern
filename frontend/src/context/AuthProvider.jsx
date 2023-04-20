@@ -40,6 +40,7 @@ const AuthProvider = ({ children }) => {
     }
 
     const actualizarPerfil = async datos => {
+        const {_id, password, __v, ...datosNew} = datos;
         const token = localStorage.getItem('apv_session')
         
         if(!token){
@@ -47,19 +48,18 @@ const AuthProvider = ({ children }) => {
         }
         
         try {
-            const config  ={
+            const config = {
                 headers: {
                     'Content-Type':'application/json',
                     Authorization:`Bearer ${token}`
                 }
             }
-            const {data} = await clienteAxios.get('/veterinarios/perfil', config);
-            setAuth(data.perfil);
-            setCargando(false);
+            const {data} = await clienteAxios.put('/veterinarios/editar-perfil', datosNew, config);
+            return data.msg;
+
         } catch (error) {
-            console.log(error.response.data.msg);
+            return error.response.data.msg;
         }
-        console.log(datos);
     }
 
     return (
