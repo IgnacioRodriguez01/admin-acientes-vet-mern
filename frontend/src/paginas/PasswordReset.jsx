@@ -2,17 +2,26 @@
 import { Link, useParams } from "react-router-dom";
 import clienteAxios from "../config/axios.jsx";
 
-import { Alerta } from "../components/Alerta.jsx";
+import Swal from "sweetalert2";
 
 const PasswordReset = () => {
-    const [alerta, setAlerta] = useState({});
     const [email, setEmail] = useState("");
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    })
 
     const handleSubmit = async (e) => {
         e.preventDefault();
        
         if ([email].includes("")) {
-            setAlerta({ msg: "Introducir un email.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'Introducir un email.'
+            })
             return;
         }
 
@@ -20,14 +29,20 @@ const PasswordReset = () => {
         try {
             const url = '/veterinarios/password-reset/';
             const {data} = await clienteAxios.post(url ,{email});
-            setAlerta({ msg: data.msg });
+            Toast.fire({
+                icon: 'success',
+                title: data.msg
+            })
 
         } catch (error) {
-           console.log(error);
-           setAlerta({ msg: error.response.data.msg, error: true }); 
+            console.log(error);
+            Toast.fire({
+                icon: 'error',
+                title: error.response.data.msg
+            })
+           
         }
         
-        setAlerta({ error: false });
     };
 
     return (
@@ -40,7 +55,6 @@ const PasswordReset = () => {
             </div>
 
             <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-                {alerta.msg && <Alerta alerta={alerta}/>}
                 
                 <form action="" onSubmit={handleSubmit}>
                     <div className="my-5">

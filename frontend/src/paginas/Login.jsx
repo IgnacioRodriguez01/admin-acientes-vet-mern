@@ -3,26 +3,33 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth.jsx";
 import clienteAxios from "../config/axios.jsx";
 
-import { Alerta } from "../components/Alerta.jsx";
+import Swal from "sweetalert2";
 
 const Login = () => {
 
-    const [alerta, setAlerta] = useState({});
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const {auth, setAuth} = useAuth();
 
     const navigate = useNavigate();
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    })
     
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if ([email, password].includes("")) {
-            setAlerta({ msg: "Hay campos vacios.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'Hay campos vacios.'
+            })
             return;
         }
-
-        setAlerta({ error: false });
 
         // Logear y obtener JWT
         try {
@@ -30,11 +37,12 @@ const Login = () => {
             //guardar token para ser traido por el context
             setAuth(data);
             localStorage.setItem('apv_session', data.token)
-            
-            setAlerta({msg:'Ingresando...'})
             navigate('/admin'); //LLevar a otra ruta
         } catch (error) {
-            setAlerta({msg: error.response.data.msg, error: true});
+            Toast.fire({
+                icon: 'error',
+                title: error.response.data.msg
+            })
         }
     };
 
@@ -48,8 +56,6 @@ const Login = () => {
             </div>
             <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
                 
-                {alerta.msg && <Alerta alerta={alerta}/>}
-
                 <form action="" onSubmit={handleSubmit}>
                     <div className="my-5">
                         <label className="uppercase text-gray-600 block text-xl font-bold">

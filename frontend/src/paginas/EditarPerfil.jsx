@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth.jsx";
 
 import AdminNav from "../components/AdminNav.jsx";
-import { Alerta } from "../components/Alerta.jsx";
+import Swal from "sweetalert2";
 
 const EditarPerfil = () => {
     const {auth, actualizarPerfil} = useAuth();
     const [perfil, setPerfil] = useState({}); //For controlled input with useEffect
-    const [alerta, setAlerta] = useState({})
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    })
 
     useEffect(() => {
         setPerfil(auth);
@@ -19,20 +25,32 @@ const EditarPerfil = () => {
         const {nombre, web, telefono, email} = perfil
 
         if(!nombre && !email){
-            setAlerta({ msg: "El nombre y el mail son obligatorios.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'El nombre y el mail son obligatorios.'
+            })
             return;
         }
         if(!nombre){
-            setAlerta({ msg: "El nombre es obligatorio.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'El nombre es obligatorio.'
+            })
             return;
         }
         if(!email){
-            setAlerta({ msg: "El mail es obligatorio.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'El mail es obligatorio.'
+            })
             return;
         }
 
         const msg = await actualizarPerfil(perfil);
-        setAlerta({ msg, error: false });
+        Toast.fire({
+            icon: 'success',
+            title: msg
+        })
     }
 
     return (
@@ -49,8 +67,6 @@ const EditarPerfil = () => {
 
             <div className="flex justify-center">
                 <div className="w-full md:w-1/2 bg-white shadow rounded-lg p-5">
-                    
-                {alerta.msg && <Alerta alerta={alerta} />}
 
                     <form onSubmit={handleSubmit}>
                         <div className="my-3">

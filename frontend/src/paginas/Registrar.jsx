@@ -2,42 +2,65 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import clienteAxios from "../config/axios.jsx";
 
-import { Alerta } from "../components/Alerta.jsx";
+import Swal from "sweetalert2";
 
 const Registrar = () => {
-    const [alerta, setAlerta] = useState({});
     const [nombre, setNombre] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [repPassword, setRepPassword] = useState("");
 
+    const Toast = Swal.mixin({ // check
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerStop : (flag) => {
+            if (flag) {
+                Swal.stopTimer;
+            }
+        }
+    })
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if ([nombre, email, password, repPassword].includes("")) {
-            setAlerta({ msg: "Hay campos vacios.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'Hay campos vacios.'
+            })
             return;
         }
         if (password !== repPassword) {
-            setAlerta({ msg: "Los passwords deben ser iguales.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'Los passwords deben ser iguales.'
+            })
             return;
         }
         if (password.length <= 6) {
-            setAlerta({
-                msg: "El password debe tener al menos 6 caracteres.",
-                error: true,
-            });
+            Toast.fire({
+                icon: 'error',
+                title: 'El password debe tener al menos 6 caracteres.'
+            })
             return;
         }
 
-        setAlerta({ error: false });
 
         // Crear usuario en la API
         try {
             const res = await clienteAxios.post('/veterinarios', {nombre, email, password});
-            setAlerta({msg:'Creado correctamente. Revisa tu email.'})
+            Toast.fire({
+                icon: 'success',
+                title: 'Creado correctamente. Revisa tu email.',
+                timerStop: false
+            })
         } catch (error) {
-            setAlerta({msg: error.response.data.msg, error: true});
+            Toast.fire({
+                icon: 'error',
+                title: error.response.data.msg
+            })
         }
     };
 
@@ -51,9 +74,7 @@ const Registrar = () => {
             </div>
 
             <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-                
-                {alerta.msg && <Alerta alerta={alerta} />}
-                
+                                
                 <form action="" onSubmit={handleSubmit}>
                     <div className="my-5">
                         <label className="uppercase text-gray-600 block text-xl font-bold">

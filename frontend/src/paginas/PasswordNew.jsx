@@ -2,17 +2,23 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import clienteAxios from "../config/axios.jsx";
 
-import { Alerta } from "../components/Alerta.jsx";
+import Swal from "sweetalert2";
 
 const PasswordNew = () => {
     const params = useParams();
     const {token} = params;
 
-    const [alerta, setAlerta] = useState({});
     const [tokenValido, setTokenValido] = useState(false);
     const [redirect, setRedirect] = useState(false);
     const [password, setPassword] = useState("");
     const [repPassword, setRepPassword] = useState("");
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    })
 
     useEffect(() => {
         const confirmarToken = async () => {
@@ -22,7 +28,10 @@ const PasswordNew = () => {
                 setTokenValido(true);
             } catch (error) {
                 console.log(error);
-                setAlerta({ msg: 'Enlace no válido', error:true });
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Enlace no válido'
+                })
             }
         }
         confirmarToken();
@@ -32,29 +41,41 @@ const PasswordNew = () => {
         e.preventDefault();
         
         if ([password, repPassword].includes("")) {
-            setAlerta({ msg: "Hay campos vacios.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'Hay campos vacios.'
+            })
             return;
         }
         if (password !== repPassword) {
-            setAlerta({ msg: "Los passwords deben ser iguales.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'Los passwords deben ser iguales.'
+            })
             return;
         }
         if (password.length <= 6) {
-            setAlerta({
-                msg: "El password debe tener al menos 6 caracteres.",
-                error: true,
-            });
+            Toast.fire({
+                icon: 'error',
+                title: 'El password debe tener al menos 6 caracteres.'
+            })
             return;
         }
 
         try {
             const url = `/veterinarios/password-reset/${token}`;
             const {data} = await clienteAxios.post(url ,{password});
-            setAlerta({ msg: data.msg });
+            Toast.fire({
+                icon: 'success',
+                title: data.msg
+            })
             setRedirect(true);
         } catch (error) {
-           console.log(error);
-           setAlerta({ msg: error.response.data.msg, error: true }); 
+            console.log(error);
+            Toast.fire({
+                icon: 'error',
+                title: error.response.data.msg
+            })
         }
     
     }
@@ -69,7 +90,6 @@ const PasswordNew = () => {
             </div>
 
             <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-                {alerta.msg && <Alerta alerta={alerta}/>}
                 
                 <form action="" onSubmit={handleSubmit}>
                     { tokenValido && 

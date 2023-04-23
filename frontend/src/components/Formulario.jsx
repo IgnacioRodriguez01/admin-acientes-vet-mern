@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import usePacientes from "../hooks/usePacientes.jsx";
 
-import { Alerta } from "./Alerta.jsx";
+import Swal from 'sweetalert2';
 
 const Formulario = () => {
     const { pacientes, guardarPaciente, pacienteEdit, editarPaciente } = usePacientes();
@@ -12,7 +12,12 @@ const Formulario = () => {
     const [fecha, setFecha] = useState('');
     const [sintomas, setSintomas] = useState('');
     
-    const [alerta, setAlerta] = useState({});
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+    })
 
     const fechaFormatInput = (fecha) => {
         const nuevaFecha = new Date(fecha);
@@ -41,20 +46,28 @@ const Formulario = () => {
         e.preventDefault();
 
         if ([nombre, propietario, email, fecha, sintomas].includes("")) {
-            setAlerta({ msg: "Todos los campos son obligatorios.", error: true });
+            Toast.fire({
+                icon: 'error',
+                title: 'Todos los campos son obligatorios.'
+            })
             return;
         }
-        setAlerta({});
 
         if(pacienteEdit?._id) {
             const paciente = {_id: pacienteEdit._id, nombre, propietario, email, fecha_alta: fecha, sintomas};
             editarPaciente(paciente);
-            setAlerta({ msg: "Editado correctamente.", error: false });
+            Toast.fire({
+                icon: 'success',
+                title: 'Editado correctamente.'
+            })
             return;
         }
 
         guardarPaciente({nombre, propietario, email, fecha, sintomas});
-        setAlerta({ msg: "Guardado correctamente.", error: false });
+        Toast.fire({
+            icon: 'success',
+            title: 'Guardado correctamente.'
+        })
     }
 
     return (
@@ -68,7 +81,6 @@ const Formulario = () => {
                 </span>
             </p>
 
-            {alerta.msg && <Alerta alerta={alerta} />}
 
             <form action="" className="bg-white py-10 px-5 mb-10 lg:mb-0 shadow-md rounded-md">
                 <div className="mb-5">

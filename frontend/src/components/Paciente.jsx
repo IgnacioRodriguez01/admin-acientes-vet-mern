@@ -1,5 +1,6 @@
 import usePacientes from "../hooks/usePacientes.jsx";
 
+
 const Paciente = ({ paciente }) => {
     const { _id, nombre, propietario, email, sintomas, fecha_alta } = paciente;
 

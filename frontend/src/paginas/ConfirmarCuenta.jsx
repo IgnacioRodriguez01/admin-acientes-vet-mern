@@ -2,14 +2,19 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import clienteAxios from "../config/axios.jsx";
 
-import { Alerta } from "../components/Alerta.jsx";
+import Swal from "sweetalert2";
 
 const ConfirmarCuenta = () => {
     const params = useParams();
     const {token} = params;
 
-    const [alerta, setAlerta] = useState({});
     const [cargando, setCargando] = useState(false);
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+    }) //add target
 
     useEffect(() => {
         const confirmarCuenta = async () => {
@@ -17,11 +22,17 @@ const ConfirmarCuenta = () => {
                 setCargando(true);
                 const url = `/veterinarios/confirmar/${token}`;
                 const {data} = await clienteAxios.get(url, {});
-                setAlerta({ msg: data.msg });
+                Toast.fire({
+                    icon: 'success',
+                    title: data.msg
+                })
 
             } catch (error) {
                 console.log(error);
-                setAlerta({ msg: error.response.data.msg, error: true });            
+                Toast.fire({
+                    icon: 'error',
+                    title: error.response.data.msg
+                })           
             }
             setCargando(false)
         }
@@ -41,7 +52,7 @@ const ConfirmarCuenta = () => {
             </div>
 
             <div className="mt-20 md:mt-5 shadow-lg px-5 py-10 rounded-xl bg-white">
-                {!cargando && <Alerta alerta={alerta} />}
+                {/* !cargando && <Alerta alerta={alerta} /> */}
             </div>
         </>
     );
